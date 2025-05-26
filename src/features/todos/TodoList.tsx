@@ -25,7 +25,7 @@ const TodoList = () => {
     e.preventDefault();
   }
 
-  // new item search box 
+  // new item add box 
   const newItemBox = (
     <form onSubmit={handleSubmit} className="mb-6 flex items-center justify-between">
       <label htmlFor="new-todo" className="sr-only">Enter a new todo item</label>
@@ -35,7 +35,7 @@ const TodoList = () => {
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
           placeholder="Enter New Todo"
-          className="border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="border border-gray-300 text-gray-800 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       <button
         type="submit"
