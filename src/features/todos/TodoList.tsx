@@ -66,11 +66,11 @@ const TodoList = () => {
   // test
   // let testContent = JSON.stringify(todos);
   return (
-    <>
-      <div>Todo Lists</div>
+    <div className="bg-green-500">
+      <h3 className="bold">Todo Lists</h3>
       {newItemBox}
       {content}
-    </>
+    </div>
   )
 }
 
