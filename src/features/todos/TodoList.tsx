@@ -1,28 +1,43 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactElement } from "react";
+import { useAddTodoMutation, useDeleteTodoMutation, useGetTodosQuery, useUpdateTodoMutation } from "../api/apiSlice";
 
 // example data 
-const todos = [
-  {
-    "userId": 1,
-    "id": 2,
-    "title": "quis ut nam facilis et officia qui",
-    "completed": true
-  },
-  {
-    "userId": 1,
-    "id": 6,
-    "title": "qui ullam ratione quibusdam voluptatem quia omnis",
-    "completed": false
-  }
-]
+// const todos = [
+//   {
+//     "userId": 1,
+//     "id": 2,
+//     "title": "quis ut nam facilis et officia qui",
+//     "completed": true
+//   },
+//   {
+//     "userId": 1,
+//     "id": 6,
+//     "title": "qui ullam ratione quibusdam voluptatem quia omnis",
+//     "completed": false
+//   }
+// ]
 
 const TodoList = () => {
   const [newTodo, setNewTodo] = useState('');
 
+  const {
+    data: todos, 
+    isLoading, 
+    isSuccess, 
+    isError, 
+    error
+  } = useGetTodosQuery({});
+
+  const [addTodo] = useAddTodoMutation(); 
+  const [updateTodo] = useUpdateTodoMutation();
+  const [deleteTodo] = useDeleteTodoMutation(); 
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    addTodo({userId: 1, title: newTodo, completed: false}); 
+    setNewTodo(''); 
   }
 
   // new item add box 
@@ -46,28 +61,53 @@ const TodoList = () => {
     </form>
   )
 
-  let content = (
-    todos.map(todo => {
-      return (
-        <article key={todo.id} className="bg-gray-800 flex items-center justify-between shadow rounded p-4 m-2">
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              checked={todo.completed}
-              id={(todo.id).toString()}
-              className="h-5 w-5 accent-green-600"
-            //onChange={}
-            />
-            <label htmlFor={(todo.id).toString()}>{todo.title}</label>
-          </div>
-          
-          <button className="text-red-500 hover:text-red-700 transition">
-            <FontAwesomeIcon icon={faTrash}/>
-          </button>
-        </article>
-      )
-    })
-  )
+  interface Todo {
+    userId: number;
+    id: number;
+    title: string;
+    completed: boolean;
+  }
+
+  let content: ReactElement[] | null | ReactElement = null;
+  if(isLoading){
+    content = <p>Loading...</p>
+  }
+  else if (isSuccess) {
+    content = (
+      todos.map((todo: Todo) => {
+        return (
+          <article key={todo.id} className="bg-gray-800 flex items-center justify-between shadow rounded p-4 m-2">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                id={(todo.id).toString()}
+                className="h-5 w-5 accent-green-600"
+                onChange={() => updateTodo({...todos, completed: !todo.completed})}
+              />
+              <label htmlFor={(todo.id).toString()}>{todo.title}</label>
+            </div>
+            
+            <button className="text-red-500 hover:text-red-700 transition"
+            onClick={()=> deleteTodo({id: todo.id})}>
+              <FontAwesomeIcon icon={faTrash}/>
+            </button>
+          </article>
+        )
+      })
+    );
+  }
+  else if(isError){
+    let errorMessage = "An error occurred";
+    if (error && typeof error === "object") {
+      if ("status" in error) {
+        errorMessage = `Error: ${JSON.stringify(error)}`;
+      } else if ("message" in error) {
+        errorMessage = (error as { message: string }).message;
+      }
+    }
+    content = <p>{errorMessage}</p>
+  }
 
   // test
   // let testContent = JSON.stringify(todos);
