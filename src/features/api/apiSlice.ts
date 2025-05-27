@@ -7,6 +7,9 @@ export const apiSlice = createApi({
     endpoints: (builder) => ({
         getTodos: builder.query({
             query: () => '/todos',
+            // new added item appears first(sort)
+            // transformResponse: (response: any[]) => 
+            //     response.sort((a,b)=> b.id - a.id),
             providesTags: ['TodosChange']
         }), 
         addTodo: builder.mutation({
@@ -29,10 +32,10 @@ export const apiSlice = createApi({
         // don't take full todo 
         // destructuring todo id 
         deleteTodo: builder.mutation({
-            query: ({ id } : { id: number }) => ({
+            query: ({ id } : { id: string }) => ({
                 url: `/todos/${id}`, 
                 method: "DELETE", 
-                body: id
+                //body: id
             }), 
             invalidatesTags: ['TodosChange']
         })

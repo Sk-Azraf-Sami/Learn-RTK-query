@@ -63,7 +63,7 @@ const TodoList = () => {
 
   interface Todo {
     userId: number;
-    id: number;
+    id: string;
     title: string;
     completed: boolean;
   }
@@ -81,7 +81,7 @@ const TodoList = () => {
               <input
                 type="checkbox"
                 checked={todo.completed}
-                id={(todo.id).toString()}
+                id={todo.id}
                 className="h-5 w-5 accent-green-600"
                 onChange={() => updateTodo({...todo, completed: !todo.completed})}
               />
