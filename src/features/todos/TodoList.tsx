@@ -83,7 +83,7 @@ const TodoList = () => {
                 checked={todo.completed}
                 id={(todo.id).toString()}
                 className="h-5 w-5 accent-green-600"
-                onChange={() => updateTodo({...todos, completed: !todo.completed})}
+                onChange={() => updateTodo({...todo, completed: !todo.completed})}
               />
               <label htmlFor={(todo.id).toString()}>{todo.title}</label>
             </div>
